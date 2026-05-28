@@ -1,0 +1,891 @@
+%==============================================================
+% RAPPORT DE PROJET - KmerPool / CitySheeP
+% Transport collaboratif inter-localités au Cameroun
+% Norme : ISO/IEC/IEEE
+% Compilé avec : pdflatex (recommandé sur Overleaf)
+%==============================================================
+
+\documentclass[12pt, a4paper]{report}
+
+%------ PACKAGES -----------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{acronym}
+\usepackage{glossaries}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\pgfplotsset{compat=1.18}
+
+%------ MISE EN PAGE -------------------------------------------
+\geometry{
+  a4paper,
+  top=2.5cm, bottom=2.5cm,
+  left=3cm, right=2.5cm
+}
+\setstretch{1.3}
+
+%------ EN-TÊTES / PIEDS DE PAGE -------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small KmerPool -- Transport collaboratif inter-localités}
+\fancyhead[R]{\small \leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%------ COULEURS -----------------------------------------------
+\definecolor{primaryBlue}{RGB}{30, 80, 160}
+\definecolor{accentOrange}{RGB}{220, 100, 0}
+\definecolor{lightGray}{RGB}{240, 240, 240}
+
+%------ TITRES -------------------------------------------------
+\titleformat{\chapter}[block]
+  {\normalfont\Large\bfseries\color{primaryBlue}}
+  {\thechapter.}{12pt}{}
+\titlespacing*{\chapter}{0pt}{20pt}{15pt}
+
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{primaryBlue}}
+  {\thesection}{10pt}{}
+
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}
+  {\thesubsection}{8pt}{}
+
+%------ HYPERLINKS ---------------------------------------------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryBlue,
+  citecolor=accentOrange,
+  urlcolor=accentOrange,
+  pdftitle={Rapport KmerPool},
+  pdfauthor={Équipe CitySheeP},
+}
+
+%------ GLOSSAIRE ----------------------------------------------
+\makeglossaries
+
+\newglossaryentry{api}{
+  name={API},
+  description={Application Programming Interface -- interface de programmation permettant à deux applications de communiquer entre elles}
+}
+\newglossaryentry{mvc}{
+  name={MVC},
+  description={Model-View-Controller -- patron d'architecture logicielle séparant la logique métier, la présentation et le contrôle}
+}
+\newglossaryentry{rest}{
+  name={REST},
+  description={Representational State Transfer -- style d'architecture pour les services web}
+}
+\newglossaryentry{uml}{
+  name={UML},
+  description={Unified Modeling Language -- langage de modélisation unifié utilisé en génie logiciel}
+}
+\newglossaryentry{mvp}{
+  name={MVP},
+  description={Minimum Viable Product -- version minimale d'un produit permettant de valider une hypothèse}
+}
+\newglossaryentry{qr}{
+  name={QR code},
+  description={Quick Response Code -- code-barres 2D utilisé pour encoder des informations}
+}
+\newglossaryentry{sos}{
+  name={SOS},
+  description={Signal d'alarme international utilisé pour signaler une situation d'urgence}
+}
+\newglossaryentry{bd}{
+  name={BD},
+  description={Base de Données -- ensemble organisé d'informations structurées stockées électroniquement}
+}
+
+%------ LISTE DES ABRÉVIATIONS ---------------------------------
+% (générée automatiquement, triée alphabétiquement)
+\newacro{API}{Application Programming Interface}
+\newacro{BD}{Base de Données}
+\newacro{CSS}{Cascading Style Sheets}
+\newacro{HTTP}{HyperText Transfer Protocol}
+\newacro{HTTPS}{HyperText Transfer Protocol Secure}
+\newacro{JSON}{JavaScript Object Notation}
+\newacro{JWT}{JSON Web Token}
+\newacro{MVC}{Model-View-Controller}
+\newacro{MVP}{Minimum Viable Product}
+\newacro{ORM}{Object-Relational Mapping}
+\newacro{QR}{Quick Response}
+\newacro{REST}{Representational State Transfer}
+\newacro{SDK}{Software Development Kit}
+\newacro{SOS}{Save Our Souls}
+\newacro{SQL}{Structured Query Language}
+\newacro{UI}{User Interface}
+\newacro{UML}{Unified Modeling Language}
+\newacro{UX}{User Experience}
+
+%==============================================================
+\begin{document}
+%==============================================================
+
+%------ PAGE DE TITRE ------------------------------------------
+\begin{titlepage}
+  \centering
+  \vspace*{1cm}
+
+  {\Large\bfseries Université de Yaoundé I\\[4pt]
+  \normalsize Département d'Informatique}\\[2cm]
+
+  \rule{\linewidth}{2pt}\\[0.4cm]
+  {\LARGE\bfseries\color{primaryBlue}
+    KmerPool -- CitySheeP\\[0.3cm]
+    \large Transport collaboratif inter-localités au Cameroun}\\[0.2cm]
+  \rule{\linewidth}{2pt}\\[1.5cm]
+
+  {\large Rapport de Projet de fin d'études}\\[0.5cm]
+  {\normalsize Application Mobile \& API REST}\\[2cm]
+
+  \begin{tabular}{rl}
+    \textbf{Auteurs :}    & Équipe CitySheeP \\[4pt]
+    \textbf{Encadreur :}  & [Nom du professeur] \\[4pt]
+    \textbf{Filière :}    & Génie Logiciel \\[4pt]
+    \textbf{Année :}      & 2024 -- 2025 \\
+  \end{tabular}
+
+  \vfill
+  {\small Rédigé avec \LaTeX\ -- Overleaf}
+\end{titlepage}
+
+%==============================================================
+% PAGES PRÉLIMINAIRES (numérotation romaine)
+%==============================================================
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+%------ RÉSUMÉ -------------------------------------------------
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+
+KmerPool (CitySheeP) est une plateforme mobile collaborative visant à révolutionner le
+transport inter-localités au Cameroun. Face à la cherté et au manque de fiabilité des
+transports entre grandes villes et localités secondaires (Ntui, Obala, Bafia, etc.),
+KmerPool met en relation conducteurs et passagers sur des trajets réguliers, et propose
+en parallèle la livraison collaborative de colis sur ces mêmes trajets.
+
+Le projet repose sur une architecture applicative composée d'une application mobile
+multi-plateforme et d'une \ac{API} \ac{REST}. La sécurité des utilisateurs est renforcée
+par un système de \ac{QR} code de vérification pré-trajet, un bouton \ac{SOS} et une
+vérification d'identité. Le modèle économique s'appuie sur un abonnement mensuel,
+une commission par trajet et une commission sur chaque colis livré.
+
+Ce rapport présente l'analyse des besoins fonctionnels et non fonctionnels, la
+modélisation \ac{UML}, l'architecture logique et physique, ainsi que les résultats de
+l'implémentation du \ac{MVP}.
+
+\bigskip
+\noindent\textbf{Mots-clés :} transport collaboratif, covoiturage, Cameroun, application mobile,
+\ac{API} \ac{REST}, livraison de colis, \ac{MVP}, sécurité, inter-localités.
+
+%------ ABSTRACT -----------------------------------------------
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+KmerPool (CitySheeP) is a collaborative mobile platform designed to revolutionize
+inter-city transport in Cameroon. Addressing the high cost and unreliability of
+transportation between major cities and secondary localities (Ntui, Obala, Bafia, etc.),
+KmerPool connects drivers and passengers on regular routes while also enabling
+collaborative parcel delivery along those same journeys.
+
+The project relies on a multi-platform mobile application backed by a REST API.
+User safety is enforced through a pre-trip QR code verification system, an SOS button,
+and identity verification. The business model combines monthly subscriptions,
+per-trip commissions, and parcel delivery commissions.
+
+This report covers the functional and non-functional requirements analysis, UML
+modelling, logical and physical architecture, and the implementation results of the MVP.
+
+\bigskip
+\noindent\textbf{Keywords:} collaborative transport, carpooling, Cameroon, mobile application,
+REST API, parcel delivery, MVP, security, inter-locality.
+
+%------ LISTE DES FIGURES (auto-générée) -----------------------
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+
+%------ LISTE DES TABLEAUX (auto-générée) ----------------------
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+
+%------ LISTE DES ABRÉVIATIONS (auto, ordre alphabétique) ------
+\chapter*{Liste des abréviations}
+\addcontentsline{toc}{chapter}{Liste des abréviations}
+\begin{acronym}[HTTPS]  % le plus long pour l'alignement
+  \acro{API}{Application Programming Interface}
+  \acro{BD}{Base de Données}
+  \acro{CSS}{Cascading Style Sheets}
+  \acro{HTTP}{HyperText Transfer Protocol}
+  \acro{HTTPS}{HyperText Transfer Protocol Secure}
+  \acro{JSON}{JavaScript Object Notation}
+  \acro{JWT}{JSON Web Token}
+  \acro{MVC}{Model-View-Controller}
+  \acro{MVP}{Minimum Viable Product}
+  \acro{ORM}{Object-Relational Mapping}
+  \acro{QR}{Quick Response}
+  \acro{REST}{Representational State Transfer}
+  \acro{SDK}{Software Development Kit}
+  \acro{SOS}{Save Our Souls}
+  \acro{SQL}{Structured Query Language}
+  \acro{UI}{User Interface}
+  \acro{UML}{Unified Modeling Language}
+  \acro{UX}{User Experience}
+\end{acronym}
+
+%------ GLOSSAIRE (auto, ordre alphabétique) -------------------
+\printglossary[title=Glossaire, toctitle=Glossaire]
+\addcontentsline{toc}{chapter}{Glossaire}
+
+%------ SOMMAIRE (table des matières synthétique) --------------
+\tableofcontents
+\addcontentsline{toc}{chapter}{Sommaire}
+
+%==============================================================
+% CORPS DU RAPPORT (numérotation arabe)
+%==============================================================
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%==============================================================
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+%==============================================================
+
+\section*{Contexte}
+Le Cameroun dispose d'un vaste réseau routier reliant les grandes métropoles aux
+localités secondaires. Pourtant, les solutions de transport structurées restent rares,
+coûteuses et peu fiables pour les trajets entre villes et localités comme Ntui, Obala
+ou Bafia. Des milliers de véhicules parcourent ces routes quotidiennement avec des
+sièges inoccupés, tandis que des passagers et des expéditeurs de colis peinent à
+trouver des options abordables et sécurisées.
+
+\section*{Problématique}
+Comment concevoir une plateforme numérique collaborative qui permette de mettre en
+relation, de manière sécurisée et économique, les conducteurs et les passagers (ou
+expéditeurs de colis) effectuant des trajets réguliers inter-localités au Cameroun,
+dans un contexte de faible confiance entre inconnus et d'infrastructure technologique
+limitée ?
+
+\section*{Motivation}
+L'absence de solutions numériques adaptées à la réalité camerounaise (connectivité
+partielle, diversité linguistique, culture communautaire forte) justifie le développement
+d'un outil sur mesure. KmerPool vise à valoriser les trajets existants, à réduire les
+coûts de transport et à créer de la confiance via des mécanismes de notation et de
+vérification d'identité.
+
+\section*{Objectifs}
+
+\subsection*{Objectif général}
+Concevoir et développer KmerPool, une application mobile de mise en relation pour le
+transport de personnes et de marchandises inter-localités au Cameroun.
+
+\subsection*{Objectifs spécifiques}
+\begin{itemize}
+  \item Analyser les besoins fonctionnels et non fonctionnels des utilisateurs cibles.
+  \item Modéliser le système à l'aide de diagrammes \ac{UML}.
+  \item Concevoir une architecture logicielle robuste et sécurisée.
+  \item Implémenter un \ac{MVP} fonctionnel (application mobile + \ac{API} \ac{REST}).
+  \item Valider la solution par des tests et des captures d'écran commentées.
+\end{itemize}
+
+\section*{Plan du rapport}
+Le présent rapport est organisé en trois chapitres principaux. Le \textbf{Chapitre 1}
+présente les concepts clés, l'état de l'art et le bilan comparatif des solutions
+existantes. Le \textbf{Chapitre 2} détaille la méthodologie, l'analyse des besoins et
+la conception du système. Le \textbf{Chapitre 3} expose l'implémentation, les résultats
+obtenus et le bilan technique.
+
+%==============================================================
+\chapter{Concepts, état de l'art et bilan}
+%==============================================================
+
+\section{Concepts fondamentaux}
+
+Cette section définit les cinq concepts clés du projet KmerPool, en distinguant les
+concepts métier, techniques et transversal.
+
+\subsection{Concept métier 1 : Le covoiturage}
+
+Le \textbf{covoiturage} désigne l'utilisation d'un véhicule privé par son conducteur pour
+transporter un ou plusieurs passagers qui partagent les frais du trajet. Il se distingue
+du taxi en ce que le conducteur n'est pas un professionnel du transport mais un
+particulier effectuant un déplacement prévu. Dans le contexte camerounais, cette
+pratique existe de manière informelle mais manque d'une infrastructure numérique
+structurée pour les trajets inter-localités.
+
+\subsection{Concept métier 2 : La livraison collaborative de colis}
+
+La \textbf{livraison collaborative} (ou crowd-shipping) consiste à confier l'acheminement
+de colis à des particuliers effectuant déjà un trajet dans la bonne direction. Ce modèle
+réduit les coûts logistiques en valorisant la capacité résiduelle des véhicules en
+déplacement, sans nécessiter de flotte dédiée.
+
+\subsection{Concept technique 1 : L'application mobile multi-plateforme}
+
+Une \textbf{application mobile multi-plateforme} est un logiciel conçu pour fonctionner
+sur plusieurs systèmes d'exploitation mobiles (Android, iOS) à partir d'une base de
+code unique. Des frameworks comme React Native ou Flutter permettent ce développement
+croisé, réduisant les coûts et les délais par rapport au développement natif.
+
+\subsection{Concept technique 2 : L'\ac{API} \ac{REST}}
+
+Une \textbf{\ac{API} \ac{REST}} (Representational State Transfer) est un ensemble de
+conventions architecturales permettant à des applications de communiquer via le protocole
+\ac{HTTP}. Elle expose des \textit{endpoints} représentant des ressources (utilisateurs,
+trajets, colis) manipulables via des méthodes standardisées (GET, POST, PUT, DELETE).
+Dans KmerPool, l'\ac{API} constitue le back-end central auquel se connecte l'application
+mobile.
+
+\subsection{Concept transversal : La confiance numérique}
+
+La \textbf{confiance numérique} est la capacité d'un système à instaurer un niveau
+de sécurité et de fiabilité suffisant pour que des inconnus acceptent d'effectuer des
+transactions entre eux. Elle repose sur des mécanismes tels que la vérification
+d'identité, le système de notation, le \ac{QR} code de validation et le bouton \ac{SOS}.
+Ce concept est transversal car il conditionne l'adoption de la plateforme par l'ensemble
+des segments d'utilisateurs.
+
+%--------------------------------------------------------------
+\section{État de l'art}
+
+Plusieurs solutions existantes abordent partiellement la problématique de KmerPool.
+Cette section les recense, en distinguant les acteurs locaux (Cameroun) et
+internationaux.
+
+\subsection{Solutions au Cameroun}
+
+À ce jour, aucune plateforme numérique structurée ne couvre le segment des trajets
+inter-localités au Cameroun. Les agences de voyage (Buca Voyages, Général Express)
+proposent des billets de bus mais ne permettent pas de covoiturage entre particuliers,
+ni la livraison de colis via des conducteurs privés. Des groupes WhatsApp et Facebook
+informels existent mais ne disposent pas d'outils de mise en relation sécurisée.
+
+\subsection{Solutions internationales}
+
+\begin{itemize}
+  \item \textbf{BlaBlaCar} (France, Europe) : leader du covoiturage longue distance,
+        ne couvre pas l'Afrique subsaharienne et ne propose pas de livraison de colis.
+  \item \textbf{Uber / Bolt} : spécialisés dans le transport urbain à la demande,
+        ne couvrent pas les trajets inter-localités ruraux.
+  \item \textbf{Jumia Delivery} : service de livraison e-commerce limité aux grandes
+        villes, sans modèle collaboratif entre particuliers.
+  \item \textbf{Karos} (France) : covoiturage domicile-travail, non adapté aux longs
+        trajets ruraux.
+\end{itemize}
+
+%--------------------------------------------------------------
+\section{Bilan comparatif}
+
+Le tableau~\ref{tab:bilan} présente une analyse comparative des solutions existantes
+par rapport aux critères objectifs de KmerPool.
+
+\begin{table}[H]
+\centering
+\caption{Tableau comparatif des solutions existantes}
+\label{tab:bilan}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|}
+\hline
+\textbf{Critère} & \textbf{BlaBlaCar} & \textbf{Bolt} & \textbf{Jumia Del.} & \textbf{Karos} & \textbf{KmerPool} \\
+\hline
+Disponible au Cameroun & Non & Partiel & Partiel & Non & \textbf{Oui} \\
+\hline
+Couvre les localités secondaires & Non & Non & Non & Non & \textbf{Oui} \\
+\hline
+Transport de personnes & Oui & Oui & Non & Oui & \textbf{Oui} \\
+\hline
+Livraison de colis & Non & Non & Oui & Non & \textbf{Oui} \\
+\hline
+Vérification d'identité & Oui & Oui & Non & Oui & \textbf{Oui} \\
+\hline
+Bouton SOS & Non & Oui & Non & Non & \textbf{Oui} \\
+\hline
+QR code de validation & Non & Non & Non & Non & \textbf{Oui} \\
+\hline
+Interface en français & Oui & Partiel & Oui & Oui & \textbf{Oui} \\
+\hline
+Gratuit (accès de base) & Oui & Non & Non & Oui & \textbf{Oui} \\
+\hline
+Adapté aux réseaux lents & Non & Non & Non & Non & \textbf{Oui} \\
+\hline
+Modèle collaboratif hybride & Non & Non & Non & Non & \textbf{Oui} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\bigskip
+\noindent\textbf{Conclusion du bilan :} Au vu de ce tableau comparatif, aucune des solutions
+existantes ne remplit l'ensemble des critères objectifs identifiés. BlaBlaCar est le plus
+proche fonctionnellement mais reste indisponible en Afrique subsaharienne et ne propose
+pas de livraison de colis. KmerPool se positionne donc comme la seule solution répondant
+à la totalité des critères dans le contexte camerounais.
+
+%==============================================================
+\chapter{Méthodologie et conception}
+%==============================================================
+
+\section{Analyse des besoins}
+
+\subsection{Besoins fonctionnels}
+
+Les besoins fonctionnels décrivent les actions que le système doit être capable d'effectuer.
+
+\begin{enumerate}
+  \item \textbf{Gestion des comptes utilisateurs} : inscription, connexion, vérification
+        d'identité (pièce d'identité, selfie), gestion du profil.
+  \item \textbf{Publication de trajets} : un conducteur peut publier un trajet avec
+        les informations de départ, d'arrivée, de date, d'heure et de nombre de places.
+  \item \textbf{Recherche et réservation} : un passager peut rechercher des trajets
+        disponibles et effectuer une réservation.
+  \item \textbf{Livraison de colis} : un expéditeur peut publier une demande de livraison
+        sur un trajet existant ; un conducteur peut accepter de transporter le colis.
+  \item \textbf{Messagerie intégrée} : communication directe entre conducteur, passager
+        et expéditeur.
+  \item \textbf{Validation QR code} : génération et scan d'un \ac{QR} code pour valider
+        la prise en charge avant le départ.
+  \item \textbf{Bouton SOS} : déclenchement d'une alerte d'urgence avec localisation
+        GPS en temps réel.
+  \item \textbf{Notation et avis} : évaluation mutuelle conducteur/passager après chaque
+        trajet.
+  \item \textbf{Gestion des paiements} : abonnements mensuels, commissions par trajet
+        et par colis livré.
+  \item \textbf{Tableau de bord} : statistiques d'utilisation pour les administrateurs.
+\end{enumerate}
+
+\subsection{Besoins non fonctionnels}
+
+\begin{enumerate}
+  \item \textbf{Performance} : temps de réponse de l'\ac{API} inférieur à 2 secondes
+        pour 95\,\% des requêtes en conditions normales.
+  \item \textbf{Disponibilité} : taux de disponibilité de la plateforme supérieur à
+        99\,\% (SLA mensuel).
+  \item \textbf{Sécurité} : chiffrement \ac{HTTPS} de toutes les communications,
+        authentification par \ac{JWT}, hachage des mots de passe (bcrypt).
+  \item \textbf{Scalabilité} : architecture capable de supporter une montée en charge
+        progressive (de 100 à 10\,000 utilisateurs simultanés).
+  \item \textbf{Accessibilité} : interface utilisable avec des connexions mobiles lentes
+        (2G/3G), taille des assets optimisée.
+  \item \textbf{Maintenabilité} : code documenté, couverture de tests supérieure à 70\,\%.
+  \item \textbf{Internationalisation} : support du français et de l'anglais.
+  \item \textbf{Conformité} : respect du Règlement Général sur la Protection des Données
+        (RGPD) et de la législation camerounaise sur les données personnelles.
+\end{enumerate}
+
+%--------------------------------------------------------------
+\section{Conception UML}
+
+\subsection{Diagramme de cas d'utilisation}
+
+La figure~\ref{fig:usecase} présente les principaux cas d'utilisation de KmerPool.
+Les acteurs identifiés sont : le \textit{Passager}, le \textit{Conducteur},
+l'\textit{Expéditeur} et l'\textit{Administrateur}.
+
+\begin{figure}[H]
+  \centering
+  % Remplacer par le fichier image du diagramme une fois exporté depuis l'outil UML
+  \fbox{\parbox{0.85\linewidth}{\centering\vspace{2cm}
+    [Insérer ici le diagramme de cas d'utilisation UML -- exporter depuis draw.io ou PlantUML]
+    \vspace{2cm}}}
+  \caption{Diagramme de cas d'utilisation -- KmerPool}
+  \label{fig:usecase}
+\end{figure}
+
+\subsection{Diagramme de classes}
+
+Le diagramme de classes (figure~\ref{fig:classes}) modélise les entités principales
+du système et leurs relations.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.85\linewidth}{\centering\vspace{2cm}
+    [Insérer ici le diagramme de classes UML]
+    \vspace{2cm}}}
+  \caption{Diagramme de classes -- KmerPool}
+  \label{fig:classes}
+\end{figure}
+
+\subsection{Diagramme d'activité : Réservation d'un trajet}
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.85\linewidth}{\centering\vspace{2cm}
+    [Insérer ici le diagramme d'activité pour la réservation d'un trajet]
+    \vspace{2cm}}}
+  \caption{Diagramme d'activité -- Réservation d'un trajet}
+  \label{fig:activity}
+\end{figure}
+
+\subsection{Diagramme de séquence : Validation QR code}
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.85\linewidth}{\centering\vspace{2cm}
+    [Insérer ici le diagramme de séquence pour la validation QR code]
+    \vspace{2cm}}}
+  \caption{Diagramme de séquence -- Validation QR code}
+  \label{fig:sequence}
+\end{figure}
+
+\subsection{Diagramme de déploiement}
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.85\linewidth}{\centering\vspace{2cm}
+    [Insérer ici le diagramme de déploiement]
+    \vspace{2cm}}}
+  \caption{Diagramme de déploiement -- KmerPool}
+  \label{fig:deploy}
+\end{figure}
+
+%--------------------------------------------------------------
+\section{Architecture du système}
+
+\subsection{Architecture logique}
+
+L'architecture logique de KmerPool repose sur un découpage en blocs fonctionnels
+distincts, communicant via des interfaces définies. Les principaux blocs sont :
+
+\begin{itemize}
+  \item \textbf{Application mobile} (front-end) : interface utilisateur multi-plateforme
+        développée avec React Native. Elle communique exclusivement avec le back-end
+        via l'\ac{API} \ac{REST}.
+  \item \textbf{\ac{API} \ac{REST}} (back-end) : couche de services exposant les
+        ressources métier. Elle gère l'authentification \ac{JWT}, la logique métier
+        et l'accès aux données.
+  \item \textbf{Base de données} : stockage persistant des données (utilisateurs,
+        trajets, réservations, colis, messages, notations).
+  \item \textbf{Service de notifications} : envoi de notifications push en temps réel
+        (réservations, alertes SOS, messages).
+  \item \textbf{Service de paiement} : intégration d'un module de paiement mobile
+        (Mobile Money, Orange Money).
+  \item \textbf{Service cartographique} : intégration d'une \ac{API} de cartographie
+        pour la géolocalisation et l'affichage des trajets.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.85\linewidth}{\centering\vspace{2cm}
+    [Insérer ici le schéma d'architecture logique (blocs et flèches)]
+    \vspace{2cm}}}
+  \caption{Architecture logique de KmerPool}
+  \label{fig:archi_logique}
+\end{figure}
+
+\subsection{Architecture physique}
+
+L'architecture physique décrit le déploiement des composants logiciels sur
+l'infrastructure matérielle et cloud.
+
+\begin{itemize}
+  \item \textbf{Serveur d'application} : instance cloud hébergeant l'\ac{API} \ac{REST}
+        (ex. : Railway, Render ou AWS EC2 -- offres gratuites pour le \ac{MVP}).
+  \item \textbf{Serveur de base de données} : instance PostgreSQL managée (ex. : Supabase,
+        PlanetScale ou ElephantSQL).
+  \item \textbf{Stockage des médias} : service de stockage objet pour les photos de profil
+        et les pièces d'identité (ex. : Cloudinary, AWS S3).
+  \item \textbf{CDN} : distribution des assets statiques de l'application mobile.
+  \item \textbf{Appareils clients} : smartphones Android et iOS des utilisateurs finals.
+\end{itemize}
+
+\subsection{Bilan architectural}
+
+Note : le choix du langage de programmation et des technologies spécifiques est détaillé
+au chapitre suivant (Chapitre~\ref{chap:impl}), lors de la présentation de
+l'implémentation.
+
+%==============================================================
+\chapter{Implémentation et résultats}
+\label{chap:impl}
+%==============================================================
+
+\section{Choix technologiques}
+
+Le tableau~\ref{tab:techno} compare les principales options technologiques évaluées
+pour chaque composant de l'application, selon au moins trois aspects. Le choix final
+est justifié par les courbes d'apprentissage de l'équipe et les contraintes du \ac{MVP}.
+
+\begin{table}[H]
+\centering
+\caption{Comparatif des technologies -- Application mobile}
+\label{tab:techno}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|l|X|X|X|}
+\hline
+\textbf{Critère} & \textbf{React Native} & \textbf{Flutter} & \textbf{Natif (Java/Swift)} \\
+\hline
+Multi-plateforme & Oui (iOS + Android) & Oui (iOS + Android) & Non (une codebase par OS) \\
+\hline
+Courbe d'apprentissage & Faible (JS/TS) & Moyenne (Dart) & Élevée \\
+\hline
+Performance & Bonne & Très bonne & Excellente \\
+\hline
+Communauté & Très large & Large & Très large \\
+\hline
+Coût de développement & Faible & Faible & Élevé \\
+\hline
+\textbf{Choix} & \textbf{Retenu} & Non retenu & Non retenu \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Comparatif des technologies -- Back-end \ac{API}}
+\label{tab:backend}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|l|X|X|X|}
+\hline
+\textbf{Critère} & \textbf{Node.js / Express} & \textbf{Django REST} & \textbf{Spring Boot} \\
+\hline
+Langage & JavaScript / TypeScript & Python & Java \\
+\hline
+Performance & Bonne (event loop) & Bonne & Très bonne \\
+\hline
+Rapidité de dev & Très rapide & Rapide & Moyenne \\
+\hline
+Écosystème & Très riche & Riche & Riche \\
+\hline
+Déploiement gratuit & Oui (Railway, Render) & Oui & Limité \\
+\hline
+\textbf{Choix} & \textbf{Retenu} & Non retenu & Non retenu \\
+\hline
+\end{tabularx}
+\end{table}
+
+%--------------------------------------------------------------
+\section{Génération de plateforme et captures d'écran}
+
+Les sections suivantes présentent les principales interfaces de l'application KmerPool,
+accompagnées de descriptions commentées.
+
+\subsection{Écran d'accueil et authentification}
+
+La figure~\ref{fig:screen1} présente l'écran d'accueil de KmerPool. Cet écran introduit
+la proposition de valeur principale de la plateforme et offre deux points d'entrée :
+la connexion pour les utilisateurs existants et l'inscription pour les nouveaux arrivants.
+La charte graphique reprend les couleurs officielles du projet.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.4\linewidth}{\centering\vspace{3cm}
+    [Capture d'écran 1 -- Écran d'accueil]
+    \vspace{3cm}}}
+  \caption{Écran d'accueil -- KmerPool}
+  \label{fig:screen1}
+\end{figure}
+
+\subsection{Recherche et publication de trajets}
+
+La figure~\ref{fig:screen2} illustre l'interface de recherche de trajets disponibles.
+L'utilisateur saisit sa ville de départ, sa destination et la date souhaitée. Les résultats
+affichent le conducteur, l'heure de départ, les arrêts intermédiaires et le tarif proposé.
+Un système de filtres permet d'affiner la recherche par nombre de places ou par options
+(colis accepté, etc.).
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.4\linewidth}{\centering\vspace{3cm}
+    [Capture d'écran 2 -- Recherche de trajets]
+    \vspace{3cm}}}
+  \caption{Interface de recherche de trajets -- KmerPool}
+  \label{fig:screen2}
+\end{figure}
+
+\subsection{Validation QR code et bouton SOS}
+
+Avant chaque trajet, le système génère un \ac{QR} code unique associé à la réservation
+(figure~\ref{fig:screen3}). Le conducteur scanne le code du passager pour confirmer
+sa présence, éliminant ainsi les risques de fraude. En cas d'urgence, le bouton \ac{SOS}
+visible sur l'écran principal déclenche une alerte immédiate envoyant la localisation
+\ac{GPS} de l'utilisateur aux contacts d'urgence définis.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.4\linewidth}{\centering\vspace{3cm}
+    [Capture d'écran 3 -- Validation QR + bouton SOS]
+    \vspace{3cm}}}
+  \caption{Validation QR code et bouton SOS -- KmerPool}
+  \label{fig:screen3}
+\end{figure}
+
+\subsection{Livraison de colis}
+
+La figure~\ref{fig:screen4} montre l'interface de dépôt d'une demande de livraison.
+L'expéditeur renseigne l'origine, la destination, le poids et la description du colis,
+puis choisit parmi les conducteurs disponibles sur le trajet correspondant.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\parbox{0.4\linewidth}{\centering\vspace{3cm}
+    [Capture d'écran 4 -- Livraison de colis]
+    \vspace{3cm}}}
+  \caption{Interface de livraison de colis -- KmerPool}
+  \label{fig:screen4}
+\end{figure}
+
+%--------------------------------------------------------------
+\section{Bilan de l'implémentation}
+
+L'implémentation du \ac{MVP} a permis de valider les fonctionnalités core de KmerPool :
+authentification sécurisée, publication et recherche de trajets, réservation, messagerie
+interne, validation \ac{QR} code et bouton \ac{SOS}. Les fonctionnalités de paiement
+intégré et de livraison de colis sont partiellement implémentées et feront l'objet
+d'une prochaine itération.
+
+%==============================================================
+\chapter*{Conclusion générale}
+\addcontentsline{toc}{chapter}{Conclusion générale}
+%==============================================================
+
+Ce projet a conduit à la conception et à l'implémentation de KmerPool, première
+plateforme collaborative de transport de personnes et de marchandises inter-localités
+au Cameroun. L'analyse de l'état de l'art a confirmé l'absence de solution numérique
+structurée répondant aux réalités locales, justifiant ainsi la pertinence du projet.
+
+La modélisation \ac{UML} et l'architecture \ac{REST} ont permis de poser des bases
+solides pour un système scalable et maintenable. Le \ac{MVP} livré démontre la
+faisabilité technique et la valeur ajoutée de la plateforme pour les trois segments
+d'utilisateurs cibles : passagers, conducteurs et expéditeurs de colis.
+
+Les perspectives d'évolution incluent l'intégration complète du paiement Mobile Money,
+le déploiement d'une solution de vérification d'identité automatisée par \ac{IA},
+l'extension du réseau à de nouvelles localités et le développement d'un programme de
+parrainage communautaire.
+
+%==============================================================
+% ÉLÉMENTS POST-CONCLUSION (numérotation romaine)
+%==============================================================
+\pagenumbering{Roman}
+\setcounter{page}{1}
+
+%------ RÉFÉRENCES (standard ISO/IEC/IEEE) ---------------------
+\begin{thebibliography}{99}
+
+\bibitem{blablacar}
+BlaBlaCar. \textit{How BlaBlaCar Works} [en ligne].
+Disponible sur : \url{https://www.blablacar.fr} (consulté le 01/06/2025).
+
+\bibitem{reactnative}
+Facebook Inc. \textit{React Native Documentation} [en ligne].
+Disponible sur : \url{https://reactnative.dev/docs/getting-started} (consulté le 01/06/2025).
+
+\bibitem{restdissert}
+Fielding, R.T., \textit{Architectural Styles and the Design of Network-based Software Architectures}.
+Thèse de doctorat, University of California, Irvine, 2000.
+
+\bibitem{umlspec}
+Object Management Group. \textit{Unified Modeling Language Specification, v2.5.1}.
+OMG Document formal/17-12-05, 2017.
+
+\bibitem{isoiec}
+ISO/IEC/IEEE. \textit{Systems and software engineering -- Life cycle processes --
+Requirements engineering}. ISO/IEC/IEEE 29148:2018.
+
+\bibitem{jwt}
+M. Jones, J. Bradley, N. Sakimura. \textit{JSON Web Token (JWT)}.
+RFC 7519, IETF, 2015. \url{https://tools.ietf.org/html/rfc7519}
+
+\bibitem{pgdp}
+Commission Nationale de l'Informatique et des Libertés (CNIL). \textit{RGPD -- Guide pratique}.
+Paris : CNIL, 2022.
+
+\bibitem{crowdship}
+Devari, A., Schweizer, A.G., Mahapatra, A.
+\textit{Crowdsourcing last-mile deliveries}.
+Journal of Humanitarian Logistics and Supply Chain Management, vol. 7, no. 3,
+pp. 259--278, 2017.
+
+\end{thebibliography}
+
+%------ ANNEXES -----------------------------------------------
+\appendix
+\chapter{Lean Canvas -- KmerPool}
+
+\begin{table}[H]
+\centering
+\caption{Lean Canvas -- KmerPool v1.0}
+\label{tab:leancanvas}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|X|X|X|}
+\hline
+\textbf{Problème} & \textbf{Solution} & \textbf{Proposition de valeur unique} \\
+Transports chers et peu fiables, véhicules avec sièges vides, livraison coûteuse entre localités, manque de confiance. &
+Mise en relation conducteurs/passagers, livraison collaborative, arrêts intermédiaires, QR code, SOS, notation. &
+Première plateforme hybride (personnes + colis) inter-localités au Cameroun, sécurisée et économique. \\
+\hline
+\textbf{Segments clients} & \textbf{Canaux} & \textbf{Sources de revenus} \\
+Étudiants, travailleurs, conducteurs, commerçants, early adopters. &
+WhatsApp/Facebook, parrainage, campus, marchés. &
+Abonnement mensuel, commission trajet, commission colis. \\
+\hline
+\textbf{Structure des coûts} & \multicolumn{2}{X|}{\textbf{Avantage déloyal}} \\
+Développement, hébergement cloud, maintenance, marketing. &
+\multicolumn{2}{X|}{1er réseau structuré inter-localités, modèle hybride unique, communauté locale ancrée.} \\
+\hline
+\end{tabularx}
+\end{table}
+
+\chapter{Extraits de code source}
+
+\lstset{
+  language=JavaScript,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{primaryBlue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{accentOrange},
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+}
+
+\begin{lstlisting}[caption={Exemple -- Endpoint de création de trajet (Node.js / Express)}, label={lst:trajet}]
+// POST /api/v1/trips
+router.post('/trips', authenticate, async (req, res) => {
+  try {
+    const { departure, destination, date, seats, price } = req.body;
+    const trip = await Trip.create({
+      driverId: req.user.id,
+      departure,
+      destination,
+      date,
+      seats,
+      price,
+    });
+    return res.status(201).json({ success: true, data: trip });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
+\end{lstlisting}
+
+%------ TABLE DES MATIÈRES (fin, si référence finale exigée) ---
+% (déjà générée en début de document -- commenter si doublon)
+
+\end{document}
